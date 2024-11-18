@@ -3,6 +3,8 @@ package main.backend.dao;
 import main.backend.model.Produto;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutoDAO {
 
@@ -31,4 +33,31 @@ public class ProdutoDAO {
         }
 
     }
+
+    public List<Produto> listarProdutos() {
+        PreparedStatement st;
+        ResultSet rs;
+        String sql = "SELECT * FROM Produtos";
+
+        try{
+            st = conexao.prepareStatement(sql);
+            rs = st.executeQuery();
+
+            List<Produto> resultado = new ArrayList<>();
+
+            while (rs.next()){
+                Produto produto = new Produto(rs.getDouble("preco_produto"),
+                        rs.getString("nome_produto"), rs.getString("tipo_produto"));
+
+                produto.setIdProduto(rs.getLong("id_produto"));
+
+                resultado.add(produto);
+            }
+            return resultado;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
 }

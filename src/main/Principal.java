@@ -17,6 +17,8 @@ public class Principal {
 
         ClienteController clienteController = new ClienteController();
 //        clienteController.cadastrar(cliente);
-        clienteController.listar();
+//        clienteController.listar();
+        ProdutoController produtoController = new ProdutoController();
+        produtoController.listar();
     }
 }

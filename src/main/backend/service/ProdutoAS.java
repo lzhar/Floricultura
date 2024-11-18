@@ -6,12 +6,16 @@ import main.backend.dao.LocalDeEntregaDAO;
 import main.backend.dao.ProdutoDAO;
 import main.backend.exceptions.FaltaDeInfo.FaltaDeInfoException;
 import main.backend.model.*;
+import org.postgresql.jdbc2.ArrayAssistant;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ProdutoAS {
@@ -29,7 +33,20 @@ public class ProdutoAS {
         }else{
             throw new FaltaDeInfoException("As informações necessárias não foram inseridas!");
         }
-
     }
 
+    public void listar() throws SQLException{
+        Connection conexao = ConexaoNoBanco.fazerConexao();
+
+        ProdutoDAO produtoDAO = new ProdutoDAO(conexao);
+        List<Produto> produtos = produtoDAO.listarProdutos();
+
+        if(produtos.isEmpty()){
+            System.out.println("Nenhum produto foi cadastrado");
+        }else{
+            for(Produto produto : produtos){
+                System.out.println(produto.toString());
+            }
+        }
+    }
 }

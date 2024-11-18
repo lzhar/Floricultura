@@ -6,10 +6,10 @@ public class Produto {
     private String nomeProduto;
     private ProdutoENUM tipoProduto;
 
-    public Produto(double precoProduto, String nomeProduto, ProdutoENUM tipoProduto){
+    public Produto(double precoProduto, String nomeProduto, String tipoProduto){
         this.precoProduto = precoProduto;
         this.nomeProduto = nomeProduto;
-        this.tipoProduto = tipoProduto;
+        this.tipoProduto = ProdutoENUM.fromString(tipoProduto);
     }
 
     public void setIdProduto(Long id){
@@ -39,6 +39,16 @@ public class Produto {
 
     public void setTipoProduto(String tipoProduto){
         this.tipoProduto = ProdutoENUM.fromString(tipoProduto);
+    }
+
+    @Override
+    public String toString(){
+        return "Produto{" +
+                "id produto='" + idProduto + '\''+
+                "preco produto='" + precoProduto  + '\'' +
+                ", nome produto=" + nomeProduto +
+                ", tipo produto='" + tipoProduto.getTipo() + '\'' +
+                '}';
     }
 
 }

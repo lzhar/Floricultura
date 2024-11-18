@@ -50,7 +50,6 @@ public class ClienteDAO {
                         rs.getInt("idade_cliente"), rs.getString("cpf_cliente"),
                         rs.getString("cep_cliente"), rs.getString("email_cliente"),
                         rs.getString("senha_cliente"));
-
                 resultado.add(cliente);
             }
             return resultado;
