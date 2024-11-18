@@ -1,15 +1,23 @@
 package main.backend.service;
 
 import main.backend.dao.ConexaoNoBanco;
+import main.backend.dao.EncomendaDAO;
+import main.backend.dao.LocalDeEntregaDAO;
 import main.backend.dao.ProdutoDAO;
 import main.backend.exceptions.FaltaDeInfo.FaltaDeInfoException;
-import main.backend.model.Produto;
+import main.backend.model.*;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class ProdutoAS {
+
+
+
     public void cadastrar(Produto produto) throws SQLException, FaltaDeInfoException {
 
         Connection conexao = ConexaoNoBanco.fazerConexao();
@@ -23,4 +31,5 @@ public class ProdutoAS {
         }
 
     }
+
 }

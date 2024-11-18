@@ -7,13 +7,15 @@ public class Cliente {
     private String cepCliente;
     private Long id;
     private String emailDoCliente;
+    private String senhaDoCliente;
 
-    public Cliente(String nomeDoCliente, Integer idadeCliente, String cpfDoCliente, String cepCliente, String emailDoCliente){
+    public Cliente(String nomeDoCliente, Integer idadeCliente, String cpfDoCliente, String cepCliente, String emailDoCliente, String senhaDoCliente){
         this.nomeDoCliente = nomeDoCliente;
         this.idadeCliente = idadeCliente;
         this.cpfDoCliente = cpfDoCliente;
         this.cepCliente = cepCliente;
         this.emailDoCliente = emailDoCliente;
+        this.senhaDoCliente = senhaDoCliente;
     }
 
 
@@ -64,4 +66,21 @@ public class Cliente {
         return emailDoCliente;
     }
 
+    public String getSenhaDoCliente(){
+        return senhaDoCliente;
+    }
+    public void setSenhaDoCliente(String senhaDoCliente){
+        this.senhaDoCliente = senhaDoCliente;
+    }
+
+    @Override
+    public String toString(){
+        return "Cliente{" +
+                "nome='" + nomeDoCliente + '\'' +
+                ", idade=" + idadeCliente +
+                ", CPF='" + cpfDoCliente + '\'' +
+                ", CEP='" + cepCliente + '\'' +
+                ", email='" + emailDoCliente + '\'' +
+                '}';
+    }
 }
