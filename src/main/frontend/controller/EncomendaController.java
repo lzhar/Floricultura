@@ -11,8 +11,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class EncomendaController {
-    public void cadastrar(Encomenda novaEncomenda,Cliente cliente, Produto produto, int qtd, LocalDeEntrega localDeEntrega) throws SQLException, FaltaDeInfoException {
-        EncomendaAS encomenda = new EncomendaAS();
-        encomenda.cadastrar(novaEncomenda, cliente, produto, qtd, localDeEntrega);
+    public void cadastrarEncomenda(Encomenda encomenda, Cliente cliente, LocalDeEntrega localDeEntrega) throws SQLException, FaltaDeInfoException {
+        EncomendaAS encomendaAS = new EncomendaAS();
+        encomendaAS.registrarEncomenda(encomenda, cliente, localDeEntrega);
     }
 }

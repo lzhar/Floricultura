@@ -9,7 +9,7 @@ import main.backend.service.ProdutoAS;
 import java.sql.SQLException;
 
 public class ProdutoController {
-    public void cadastrar() throws SQLException, FaltaDeInfoException {
+    public void cadastrar(Produto produto) throws SQLException, FaltaDeInfoException {
         ProdutoAS produtoTeste = new ProdutoAS();
         Produto novoProduto = new Produto(20.50, "bis", ProdutoENUM.CHOCOLATE.getTipo());
         produtoTeste.cadastrar(novoProduto);

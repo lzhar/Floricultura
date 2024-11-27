@@ -6,6 +6,7 @@ public class LocalDeEntrega {
     private LocalDeEntregaEnum localDeEntrega;
     private Long id;
 
+
     public LocalDeEntrega(LocalDeEntregaEnum localDeEntrega){
         this.localDeEntrega = localDeEntrega;
     }
