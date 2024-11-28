@@ -1,9 +1,15 @@
 package main.frontend.view;
 
+import main.backend.exceptions.FaltaDeInfo.FaltaDeInfoException;
+import main.backend.model.Cliente;
+import main.backend.model.Produto;
+import main.backend.model.ProdutoENUM;
+import main.frontend.controller.ClienteController;
+import main.frontend.controller.ProdutoController;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class TelaPrincipal {
 
@@ -11,66 +17,45 @@ public class TelaPrincipal {
     private JPanel panel;
     private JLabel label;
     private JButton buttonCadastrar;
-    private JButton buttonEncomendar;
+    private JButton buttonCadastrarProduto;
     private JLabel imageLabel;
 
     public TelaPrincipal() {
-        // Criando o frame principal
         frame = new JFrame("Floricultura Lírios do Vale");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
 
-        // Configurando o painel principal
         panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Layout vertical
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        // Adicionando a imagem
-        ImageIcon imageIcon = new ImageIcon("src\\swing\\smith\\floricultura lirios do vale\\floricultura.jpg"); // Altere o caminho da imagem
-        imageLabel = new JLabel(imageIcon);
-        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza a imagem
 
-        // Criando o rótulo de boas-vindas
         label = new JLabel("Bem-vindo a Floricultura Lírios do Vale", JLabel.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, 24));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Criando os botões
         buttonCadastrar = new JButton("Cadastrar");
         buttonCadastrar.setFont(new Font("Arial", Font.PLAIN, 14));
-        buttonCadastrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarTelaDeCadastro();
-            }
-        });
+        buttonCadastrar.addActionListener(e -> mostrarTelaDeCadastro());
 
-        buttonEncomendar = new JButton("Encomendar");
-        buttonEncomendar.setFont(new Font("Arial", Font.PLAIN, 14));
-        buttonEncomendar.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza o botão
-        buttonEncomendar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarTelaDeEncomenda();
-            }
-        });
+        buttonCadastrarProduto = new JButton("Cadastrar produtos");
+        buttonCadastrarProduto.setFont(new Font("Arial", Font.PLAIN, 14));
+        buttonCadastrarProduto.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonCadastrarProduto.addActionListener(e -> mostrarTelaDeCadastroProduto());
 
-        // Criando um painel horizontal para os botões
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); // Espaçamento horizontal entre os botões
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         buttonPanel.add(buttonCadastrar);
 
-        // Adicionando os componentes no painel principal
         panel.add(Box.createVerticalGlue());
-        panel.add(imageLabel);
+
         panel.add(Box.createVerticalStrut(20));
         panel.add(label);
         panel.add(Box.createVerticalStrut(20));
-        panel.add(buttonPanel); // Adicionando o painel dos botões
+        panel.add(buttonPanel);
         panel.add(Box.createVerticalStrut(20));
-        panel.add(buttonEncomendar); // Adicionando o botão "Encomendar"
+        panel.add(buttonCadastrarProduto);
         panel.add(Box.createVerticalGlue());
 
-        // Adiciona o painel no frame
         frame.add(panel);
     }
 
@@ -79,108 +64,152 @@ public class TelaPrincipal {
     }
 
     private void mostrarTelaDeCadastro() {
-        // Criando a tela de cadastro com dimensões dobradas
-        JFrame cadastroFrame = new JFrame("Tela de Cadastro");
-        cadastroFrame.setSize(400, 400); // Tela de cadastro agora tem o dobro de altura
-        cadastroFrame.setLocationRelativeTo(null);
-        cadastroFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame cadastro = new JFrame("Tela de cadastro");
+        cadastro.setSize(500, 500);
+        cadastro.setLocationRelativeTo(null);
+        cadastro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Painel principal com BoxLayout
-        JPanel cadastroPanel = new JPanel();
-        cadastroPanel.setLayout(new BoxLayout(cadastroPanel, BoxLayout.Y_AXIS));
-        cadastroPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Espaçamento nas bordas
+        JPanel cadastroPainel = new JPanel();
+        cadastroPainel.setLayout(new BoxLayout(cadastroPainel, BoxLayout.Y_AXIS));
+        cadastroPainel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Campos de entrada
         JLabel nomeLabel = new JLabel("Nome:");
-        nomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JTextField nomeField = new JTextField(20);
-        nomeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, nomeField.getPreferredSize().height));
+        JTextField nomeCampo = new JTextField(20);
 
         JLabel idadeLabel = new JLabel("Idade:");
-        idadeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JTextField idadeField = new JTextField(20);
-        idadeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, idadeField.getPreferredSize().height));
+        JTextField idadeCampo = new JTextField(20);
 
-        JLabel cpfLabel = new JLabel("CPF:");
-        cpfLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JTextField cpfField = new JTextField(20);
-        cpfField.setMaximumSize(new Dimension(Integer.MAX_VALUE, cpfField.getPreferredSize().height));
+        JLabel cpfLabel = new JLabel("Cpf:");
+        JTextField cpfCampo = new JTextField(20);
 
-        JLabel cepLabel = new JLabel("CEP:");
-        cepLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JTextField cepField = new JTextField(20);
-        cepField.setMaximumSize(new Dimension(Integer.MAX_VALUE, cepField.getPreferredSize().height));
+        JLabel cepLabel = new JLabel("Cep:");
+        JTextField cepCampo = new JTextField(20);
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JTextField emailField = new JTextField(20);
-        emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, emailField.getPreferredSize().height));
+        JTextField emailCampo = new JTextField(20);
 
         JLabel senhaLabel = new JLabel("Senha:");
-        senhaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JPasswordField senhaField = new JPasswordField(20);
-        senhaField.setMaximumSize(new Dimension(Integer.MAX_VALUE, senhaField.getPreferredSize().height));
+        JTextField senhaCampo = new JPasswordField(20);
 
-        // Botão de cadastrar
-        JButton cadastrarButton = new JButton("Cadastrar");
-        cadastrarButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cadastrarButton.addActionListener(e -> {
-            String nome = nomeField.getText();
-            String idade = idadeField.getText();
-            String cpf = cpfField.getText();
-            String cep = cepField.getText();
-            String email = emailField.getText();
-            String senha = new String(senhaField.getPassword());
+        JButton cadastrarBotao = new JButton("Cadastrar");
+        cadastrarBotao.addActionListener(e -> {
 
-            // Validação simples
-            if (nome.isEmpty() || idade.isEmpty() || cpf.isEmpty() || cep.isEmpty() || email.isEmpty() || senha.isEmpty()) {
-                JOptionPane.showMessageDialog(cadastroFrame, "Preencha todos os campos!", "Erro", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(cadastroFrame, "Cadastro realizado com sucesso!");
-                cadastroFrame.dispose(); // Fecha a tela de cadastro
+            String nome = nomeCampo.getText();
+            String idadeStr = idadeCampo.getText();
+            String cpf = cpfCampo.getText();
+            String cep = cepCampo.getText();
+            String email = emailCampo.getText();
+            String senha = senhaCampo.getText();
+
+            if (nome.isEmpty() || idadeStr.isEmpty() || cpf.isEmpty() || cep.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+                JOptionPane.showMessageDialog(cadastro, "Preencha todos os campos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int idade = Integer.parseInt(idadeStr);
+                Cliente cliente = new Cliente(nome, idade, cpf, cep, email, senha);
+                ClienteController clienteController = new ClienteController();
+                clienteController.cadastrar(cliente);
+
+                JOptionPane.showMessageDialog(cadastro, "Cadastro realizado com sucesso!");
+                cadastro.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(cadastro, "A idade deve ser um número válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException | FaltaDeInfoException ex) {
+                JOptionPane.showMessageDialog(cadastro, "Erro ao cadastrar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Adicionando os componentes ao painel
-        cadastroPanel.add(nomeLabel);
-        cadastroPanel.add(nomeField);
-        cadastroPanel.add(Box.createVerticalStrut(10)); // Espaçamento
-        cadastroPanel.add(idadeLabel);
-        cadastroPanel.add(idadeField);
-        cadastroPanel.add(Box.createVerticalStrut(10));
-        cadastroPanel.add(cpfLabel);
-        cadastroPanel.add(cpfField);
-        cadastroPanel.add(Box.createVerticalStrut(10));
-        cadastroPanel.add(cepLabel);
-        cadastroPanel.add(cepField);
-        cadastroPanel.add(Box.createVerticalStrut(10));
-        cadastroPanel.add(emailLabel);
-        cadastroPanel.add(emailField);
-        cadastroPanel.add(Box.createVerticalStrut(10));
-        cadastroPanel.add(senhaLabel);
-        cadastroPanel.add(senhaField);
-        cadastroPanel.add(Box.createVerticalStrut(20));
-        cadastroPanel.add(cadastrarButton);
+        cadastroPainel.add(nomeLabel);
+        cadastroPainel.add(nomeCampo);
+        cadastroPainel.add(Box.createVerticalStrut(10));
+        cadastroPainel.add(idadeLabel);
+        cadastroPainel.add(idadeCampo);
+        cadastroPainel.add(Box.createVerticalStrut(10));
+        cadastroPainel.add(cpfLabel);
+        cadastroPainel.add(cpfCampo);
+        cadastroPainel.add(Box.createVerticalStrut(10));
+        cadastroPainel.add(cepLabel);
+        cadastroPainel.add(cepCampo);
+        cadastroPainel.add(Box.createVerticalStrut(10));
+        cadastroPainel.add(emailLabel);
+        cadastroPainel.add(emailCampo);
+        cadastroPainel.add(Box.createVerticalStrut(10));
+        cadastroPainel.add(senhaLabel);
+        cadastroPainel.add(senhaCampo);
+        cadastroPainel.add(Box.createVerticalStrut(20));
+        cadastroPainel.add(cadastrarBotao);
 
-        // Adicionando o painel no frame de cadastro
-        cadastroFrame.add(cadastroPanel);
-        cadastroFrame.setVisible(true);
+        cadastro.add(cadastroPainel);
+        cadastro.setVisible(true);
     }
 
-    private void mostrarTelaDeEncomenda() {
-        // Configurando a nova janela para a encomenda
-        JFrame encomendaFrame = new JFrame("Encomenda");
-        encomendaFrame.setSize(1200, 900); // Reduzindo 100px na altura e largura
-        encomendaFrame.setLocationRelativeTo(frame);
+    public void mostrarTelaDeCadastroProduto(){
+        JFrame cadastrarProduto = new JFrame("Tela de cadastro de produto");
+        cadastrarProduto.setSize(500, 500);
+        cadastrarProduto.setLocationRelativeTo(null);
+        cadastrarProduto.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Painel principal
-        JPanel encomendaPanel = new JPanel();
-        encomendaPanel.setLayout(new GridLayout(2, 2, 20, 20)); // Grid de 2x2 com espaçamento
+        JPanel cadastrarProdutoPainel = new JPanel();
+        cadastrarProdutoPainel.setLayout(new BoxLayout(cadastrarProdutoPainel, BoxLayout.Y_AXIS));
+        cadastrarProdutoPainel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
-        // Adicionando o painel de encomenda à janela
-        encomendaFrame.add(encomendaPanel);
-        encomendaFrame.setVisible(true);
+        JLabel precoProdutoLabel = new JLabel("preço do produto:");
+        JTextField precoProdutoCampo = new JTextField();
+        precoProdutoCampo.setMaximumSize(new Dimension(200, 25));
+
+        JLabel nomeProdutoLabel = new JLabel("nome do produto");
+        JTextField nomeProdutoCampo = new JTextField();
+        nomeProdutoCampo.setMaximumSize(new Dimension(200, 25));
+
+        JLabel tipoProdutoLabel = new JLabel("Tipo do produto:");
+
+        JComboBox<ProdutoENUM> tipoProdutoComboBox = new JComboBox<>(ProdutoENUM.values());
+        tipoProdutoComboBox.setMaximumSize(new Dimension(200, 25));
+
+        JButton botaoDeCadastrarProduto = new JButton("Cadastrar produto");
+        botaoDeCadastrarProduto.addActionListener(e -> {
+            String precoProdutoStr = precoProdutoCampo.getText();
+            String nomeProduto = nomeProdutoCampo.getText();
+            ProdutoENUM produtoENUM = (ProdutoENUM) tipoProdutoComboBox.getSelectedItem();
+
+            if(precoProdutoStr.isEmpty() || nomeProduto.isEmpty() || produtoENUM == null){
+                JOptionPane.showMessageDialog(cadastrarProduto, "Preencha todos os campos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try{
+                double precoProduto = Double.parseDouble(precoProdutoStr);
+
+                Produto produto = new Produto(precoProduto, nomeProduto, produtoENUM.getTipo());
+                ProdutoController produtoController = new ProdutoController();
+                produtoController.cadastrar(produto);
+
+                JOptionPane.showMessageDialog(cadastrarProduto, "Cadastro realizado com sucesso!");
+                cadastrarProduto.dispose();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (FaltaDeInfoException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        cadastrarProdutoPainel.add(precoProdutoLabel);
+        cadastrarProdutoPainel.add(precoProdutoCampo);
+        cadastrarProdutoPainel.add(Box.createVerticalStrut(2));
+        cadastrarProdutoPainel.add(nomeProdutoLabel);
+        cadastrarProdutoPainel.add(nomeProdutoCampo);
+        cadastrarProdutoPainel.add(Box.createVerticalStrut(2));
+        cadastrarProdutoPainel.add(tipoProdutoLabel);
+        cadastrarProdutoPainel.add(tipoProdutoComboBox);
+        cadastrarProdutoPainel.add(Box.createVerticalStrut(2));
+        cadastrarProdutoPainel.add(botaoDeCadastrarProduto);
+
+        cadastrarProduto.add(cadastrarProdutoPainel);
+        cadastrarProduto.setVisible(true);
     }
+
 
 
 }
